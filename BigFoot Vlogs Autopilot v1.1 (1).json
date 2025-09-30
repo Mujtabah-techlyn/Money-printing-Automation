@@ -1,0 +1,875 @@
+{
+  "name": "My workflow 10",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Generate a story.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are an AI Story Prompt Writer Agent for a Bigfoot-themed vlog-style YouTube video. Your task is to write a short story broken into 8 scenes, each formatted as a video prompt written in vivid, cinematic language. These prompts are for an AI video generator, and they will later be spliced together into a full video. The only allowed output format is the following JSON:\n\n{\n  \"title\": \"Exciting, descriptive, simplistic title here\",\n  \"description\": \"Short, few sentence description based on the story\",\n  \"scenes\": {\n    \"scene 1\": \"\",\n    \"scene 2\": \"\",\n    \"scene 3\": \"\",\n    \"scene 4\": \"\",\n    \"scene 5\": \"\",\n    \"scene 6\": \"\",\n    \"scene 7\": \"\",\n    \"scene 8\": \"\"\n  }\n}\n\n## RULES FOR WRITING SCENES:\nStart each scene like this:\n\n\"A ultrawide selfie stick video of bigfoot in the forest, he holds out a wobbling selfie stick with realistic handheld shake.\"\n\nBigfoot must always hold the selfie stick with one hand only; the other hand should be visibly doing something relevant to the scene. Any tasks done should make sense to be completed with one hand only, logically one hand is always holding the selfie stick. AVOID two handed tasks. Each scene should only contain one singular clear action.\n\nScene 1 is always an intro. Scene 8 is always an outro.\n\nThe story should be fully complete by Scene 6 or 7.\n\nAll scenes must be cinematic written prompts. Never write narration or instructions outside of the scene description.\n\nEach scene must feel connected to the previous one. Always maintain logical continuity in action, environment, and camera type.\n\nBigfoot must say something relevant in every scene.\n\nHis speech should always match the context of the scene (e.g., if he's chopping wood, he might say, “Gotta keep the swing clean… hhhf can’t split it if I miss.”).\n\nAvoid repeating locations unless it fits the story. Backgrounds should evolve with the narrative.\n\n## SCENE STYLE REQUIREMENTS:\nEach scene must be written in this style:\n\nVivid, cinematic description of Bigfoot's actions, environment, and camera angle\n\nEnd with \"Time of Day\", \"Audio\", and \"Background\" details in the same structure and tone as the examples. Always End with \"Selfie Stick: realistic handheld shake\"\n\nInclude Bigfoot’s voice and mood where relevant, implied within the actions\n\nMaintain emotional or narrative flow between scenes\n\nThen follow with rich visual detail, subtle ambient description, and environmental sounds. Each prompt should feel like one uninterrupted moment captured on film.\n\n## STORY THEMES TO USE FOR INSPIRATION:\nYour stories should be imaginative and simple. Use ideas like:\nMaking pizza, Morning routine, Making a wolf friend, Going skydiving, Making coffee, Building a log cabin\n\nAvoid complexity or dialogue-heavy moments. Focus on visually clear actions that can be interpreted by video generation tools.\n\n## FINAL INSTRUCTIONS:\nOutput must be only the JSON format. No commentary.\n\nTitles should be short, vivid, and clickable (e.g., “Bigfoot Makes Coffee in the Woods”).\n\nDescriptions should summarize the plot in 1–2 short sentences, written in casual first person (e.g., “I started my morning off right with a fresh-brewed cup of coffee deep in the forest.”).\n\nDo not skip any fields in the JSON.\n\nUse the think tool to determine what each scene will be before writing the prompt for it.\n\nEach output should result in a compelling, coherent 8-scene story suitable for a YouTube AI-generated vlog."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -540,
+        1020
+      ],
+      "id": "923dddf5-b51e-4260-90db-9e8c49e60bdf",
+      "name": "Story Agent",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        1180
+      ],
+      "id": "ccd3430a-21e9-449a-9b94-cc77a2d2c1d6",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"title\": {\n      \"type\": \"string\",\n      \"description\": \"Exciting, descriptive, and simple title for the Bigfoot vlog video\"\n    },\n    \"description\": {\n      \"type\": \"string\",\n      \"description\": \"Short summary of the video story in 1–2 sentences\"\n    },\n    \"scenes\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"scene 1\": { \"type\": \"string\" },\n        \"scene 2\": { \"type\": \"string\" },\n        \"scene 3\": { \"type\": \"string\" },\n        \"scene 4\": { \"type\": \"string\" },\n        \"scene 5\": { \"type\": \"string\" },\n        \"scene 6\": { \"type\": \"string\" },\n        \"scene 7\": { \"type\": \"string\" },\n        \"scene 8\": { \"type\": \"string\" }\n      },\n      \"required\": [\n        \"scene 1\",\n        \"scene 2\",\n        \"scene 3\",\n        \"scene 4\",\n        \"scene 5\",\n        \"scene 6\",\n        \"scene 7\",\n        \"scene 8\"\n      ],\n      \"additionalProperties\": false\n    }\n  },\n  \"required\": [\"title\", \"description\", \"scenes\"],\n  \"additionalProperties\": false\n}\n",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -400,
+        1180
+      ],
+      "id": "08b0bd62-a723-40ee-8214-255632e25a90",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-20250514",
+          "cachedResultName": "Claude 4 Sonnet"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -260,
+        780
+      ],
+      "id": "49b7f0f1-bd98-4def-9e81-99d5d59c45b3",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "NSURv9xLbWRtmPPw",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the first item from the input\nconst item = items[0]; // 'items' is the correct n8n context variable\n\n// Safely access the scenes\nconst scenes = item.json.output?.scenes;\n\nif (!scenes) {\n  throw new Error(\"Scenes not found in input data.\");\n}\n\n// Return 8 individual items (one per scene)\nreturn Object.entries(scenes).map(([key, value]) => {\n  return {\n    json: {\n      scene: key,\n      text: value\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        1020
+      ],
+      "id": "44690c4d-652e-49a2-9923-71b67f4f3a72",
+      "name": "Unbundle"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/veo/record-info",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        1260
+      ],
+      "id": "9e291e1c-d3d9-4794-837e-5d9fa796e960",
+      "name": "Get Veo 3",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MHwrxSd3thzwu1OE",
+          "name": "Kie AI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/veo/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": \"{{ $json.text }}\",\n  \"model\": \"veo3_fast\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        840
+      ],
+      "id": "c8ca6075-4457-4dcd-b493-84561c86cb18",
+      "name": "Create Veo 3",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MHwrxSd3thzwu1OE",
+          "name": "Kie AI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const storyAgent = $items('Story Agent')[0].json;\n\nreturn [\n  {\n    video_urls: items\n      .map(item => item.json?.data?.response?.resultUrls || [])\n      .flat(),\n    title: storyAgent.output?.title || '',\n    description: storyAgent.output?.description || ''\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        720
+      ],
+      "id": "93824dba-7bb7-4987-8b55-d1a68b518c6f",
+      "name": "Group Clips"
+    },
+    {
+      "parameters": {
+        "url": "=https://queue.fal.run/fal-ai/ffmpeg-api/requests/{{ $json.request_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1080,
+        1380
+      ],
+      "id": "21f2fde0-d62f-4e32-a938-175a445dd973",
+      "name": "Get Video",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "lygpKkBVEdw8cJ3E",
+          "name": "Fal AI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1rPIOkAhue_rYl4He5qMNs7Kf2f--LZFabJ3KNU5hqzU",
+          "mode": "list",
+          "cachedResultName": "Bigfoot YT test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rPIOkAhue_rYl4He5qMNs7Kf2f--LZFabJ3KNU5hqzU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rPIOkAhue_rYl4He5qMNs7Kf2f--LZFabJ3KNU5hqzU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Video Number": "==ROW() -1",
+            "Title": "={{ $('Group Clips').item.json.title }}",
+            "Description": "={{ $('Group Clips').item.json.description }}",
+            "Final Output": "={{ $json.video_url }}",
+            "Status": "Ready"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Video Number",
+              "displayName": "Video Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Final Output",
+              "displayName": "Final Output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1640,
+        620
+      ],
+      "id": "00d6b103-21f6-4cdc-b072-615e55716f87",
+      "name": "Track Video Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NHyHT0Hj3y4h7yXe",
+          "name": "koen gpt"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://queue.fal.run/fal-ai/ffmpeg-api/compose",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"tracks\": [\n    {\n      \"id\": \"1\",\n      \"type\": \"video\",\n      \"keyframes\": [\n        { \"url\": \"{{ $json.video_urls[0] }}\", \"timestamp\": 0, \"duration\": 8 },\n        { \"url\": \"{{ $json.video_urls[1] }}\", \"timestamp\": 8, \"duration\": 8 },\n        { \"url\": \"{{ $json.video_urls[2] }}\", \"timestamp\": 16, \"duration\": 8 },\n        { \"url\": \"{{ $json.video_urls[3] }}\", \"timestamp\": 24, \"duration\": 8 },\n        { \"url\": \"{{ $json.video_urls[4] }}\", \"timestamp\": 32, \"duration\": 8 },\n        { \"url\": \"{{ $json.video_urls[5] }}\", \"timestamp\": 40, \"duration\": 8 },\n        { \"url\": \"{{ $json.video_urls[6] }}\", \"timestamp\": 48, \"duration\": 8 },\n        { \"url\": \"{{ $json.video_urls[7] }}\", \"timestamp\": 56, \"duration\": 8 }\n      ]\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1080,
+        940
+      ],
+      "id": "e6d96608-b8e1-4c50-9a13-04cd9cf2e5ec",
+      "name": "Combine Video",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "lygpKkBVEdw8cJ3E",
+          "name": "Fal AI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://backend.blotato.com/v2/media",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json['Final Output'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1640,
+        900
+      ],
+      "id": "79d26d53-7b00-4329-8e12-c87b4f9e150e",
+      "name": "Upload Video",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "yahscR4YF3qVUkie",
+          "name": "Blotato"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://backend.blotato.com/v2/posts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"post\": {\n    \"accountId\": \"6039\",\n    \"target\": {\n      \"targetType\": \"youtube\",\n      \"title\": \"{{ $('Group Clips').item.json.title }}\",\n      \"privacyStatus\": \"public\",\n      \"shouldNotifySubscribers\": false,\n      \"isMadeForKids\": false\n    },\n    \"content\": {\n      \"text\": \"{{ $('Group Clips').item.json.description }}\",\n      \"platform\": \"youtube\",\n      \"mediaUrls\": [\"{{ $json.url }}\"]\n    }\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1640,
+        1180
+      ],
+      "id": "7973fee4-9a2d-4825-8fd2-743a3afd20ca",
+      "name": "YouTube Publish",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "yahscR4YF3qVUkie",
+          "name": "Blotato"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1080,
+        1160
+      ],
+      "id": "6c740704-eadf-48fb-9fb8-a635508b84bc",
+      "name": "Wait 60s",
+      "webhookId": "33b7cd85-b465-45b3-b86d-c29de14c4ea0"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1rPIOkAhue_rYl4He5qMNs7Kf2f--LZFabJ3KNU5hqzU",
+          "mode": "list",
+          "cachedResultName": "Bigfoot YT test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rPIOkAhue_rYl4He5qMNs7Kf2f--LZFabJ3KNU5hqzU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wYJgotzhwAT1gL9RrgB01OfC1SDwFV5Df5j5tWrsQ0g/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Posted",
+            "Title": "={{ $('Track Video Data').item.json.Title }}"
+          },
+          "matchingColumns": [
+            "Title"
+          ],
+          "schema": [
+            {
+              "id": "Video Number",
+              "displayName": "Video Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Final Output",
+              "displayName": "Final Output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1640,
+        1460
+      ],
+      "id": "4d6378f2-aa3a-43bc-a4c8-13bad92424e3",
+      "name": "Update Status",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NHyHT0Hj3y4h7yXe",
+          "name": "koen gpt"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Write Story",
+        "height": 380,
+        "width": 720,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -800,
+        940
+      ],
+      "typeVersion": 1,
+      "id": "573de584-e04e-4855-968e-e5e7c939a511",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Create Video",
+        "height": 660,
+        "width": 260,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        320,
+        780
+      ],
+      "id": "ccbf99f8-b600-42ab-8c25-cd30f9873ba8",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Combine Clips",
+        "height": 900,
+        "width": 260
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        660
+      ],
+      "id": "4e3f11cc-6a52-4cbf-bb58-81c4e0d5e69d",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Auto Post",
+        "height": 1100,
+        "width": 260,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        560
+      ],
+      "id": "5d776b5e-c80d-4046-ba51-07a57c85167f",
+      "name": "Sticky Note3",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -720,
+        1020
+      ],
+      "id": "2d234ec0-56f9-4a66-843c-63163376e65c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "content": "# Welcome to BigFoot YouTube on Autopilot!\n\n## Follow all the purple notes to get your credentials setup.",
+        "width": 800,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "2e540730-acd3-41a8-88d9-56f6b03d7def",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Connect Your Chat Model Credential\n\nClaude API: https://console.anthropic.com/dashboard\n\nClaude works well for this workflow, but you can try OpenAI as well.",
+        "width": 720,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -800,
+        740
+      ],
+      "typeVersion": 1,
+      "id": "ed8603c7-9f8e-44e5-976c-4a1148b32090",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Connect to Kie AI\n\n\nKie AI: https://kie.ai/api-key\n\nAfter logging in, copy your API key.\n\n*Under \"Header Auth\" in each node below, click \"Create a new credential\"\n*For the name, use \"Authorization\"\n*For the value, use \"Bearer YOUR-API-KEY\"\n\nfill YOUR-API-KEY with your API Key you copied from Kie AI.\n\nThen you can save your credential for both nodes below.\n\n\n",
+        "height": 340,
+        "width": 500,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        180,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "bd50a7ca-10aa-41fb-8dcc-2d9488c0da44",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Connect to Fal AI\n\n\nFal AI: https://fal.ai/dashboard/keys\n\nAfter logging in, copy your API key.\n\n*Under \"Header Auth\" in each node below, click \"Create a new credential\"\n*For the name, use \"Authorization\"\n*For the value, use \"Key YOUR-API-KEY\"\n\nfill YOUR-API-KEY with your API Key you copied from Fal AI.\n\nThen you can save your credential for both nodes below.\n\n\n",
+        "height": 340,
+        "width": 500,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        880,
+        260
+      ],
+      "typeVersion": 1,
+      "id": "d519fae3-bdb3-456c-b548-a8be5359a480",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "## Connect to Blotato\n\n\nBlotato: https://blotato.com/?ref=koen\n\nAfter logging in, click settings in the bottom left and scroll down to copy your API key.\n\n*Under \"Header Auth\" in each node below, click \"Create a new credential\"\n*For the name, use \"blotato-api-key\"\n*For the value, use \"YOUR-API-KEY\"\n\nfill YOUR-API-KEY with your API Key you copied from Blotato\n\nThen you can save your credential for both nodes below.\n\n## Make sure you add your account ID\n\nIn the \"YouTube Publish\" node, add your account ID from Blotato into the JSON under: accountId: \"xxxx\"\n\n\n",
+        "height": 480,
+        "width": 500,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1460,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "e7f7278d-6ecf-4de8-98a4-d8b74ba09c55",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "Title (using to match):\n\n{{ $('Track Video Data').item.json.Title }}\n\nStatus:\nPosted",
+        "height": 140,
+        "width": 320,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1880,
+        1500
+      ],
+      "typeVersion": 1,
+      "id": "8d7ff2d4-b8bf-42df-9405-f094e1a15630",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "Video Number:\n=ROW() -1\n\nTitle:\n{{ $('Group Clips').item.json.title }}\n\nDescription:\n{{ $('Group Clips').item.json.description }}\n\nStatus:\nReady\n\nFinal Output:\n{{ $json.video_url }}",
+        "height": 300,
+        "width": 320,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1860,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "90cd3107-b26e-4d09-9c63-c1e101aad361",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "amount": 600
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        1040
+      ],
+      "id": "59854ff4-ae20-44f7-9335-227a3ce32060",
+      "name": "Wait 10min",
+      "webhookId": "110b0b02-58de-472d-bb61-ef4544a514fa"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Story Agent": {
+      "main": [
+        [
+          {
+            "node": "Unbundle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "Story Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Story Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Story Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unbundle": {
+      "main": [
+        [
+          {
+            "node": "Create Veo 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Veo 3": {
+      "main": [
+        [
+          {
+            "node": "Wait 10min",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Veo 3": {
+      "main": [
+        [
+          {
+            "node": "Group Clips",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Group Clips": {
+      "main": [
+        [
+          {
+            "node": "Combine Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Video": {
+      "main": [
+        [
+          {
+            "node": "Track Video Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Video": {
+      "main": [
+        [
+          {
+            "node": "Wait 60s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track Video Data": {
+      "main": [
+        [
+          {
+            "node": "Upload Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Video": {
+      "main": [
+        [
+          {
+            "node": "YouTube Publish",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube Publish": {
+      "main": [
+        [
+          {
+            "node": "Update Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 60s": {
+      "main": [
+        [
+          {
+            "node": "Get Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Story Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 10min": {
+      "main": [
+        [
+          {
+            "node": "Get Veo 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "",
+  "meta": {
+    "instanceId": "dc7ac3c935443efe3da08349440ffc92ac6539729601a00b00aa4a9b13ee6627"
+  },
+  "tags": []
+}
